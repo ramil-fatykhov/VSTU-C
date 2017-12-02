@@ -23,45 +23,55 @@ void initBall(Ball &ball, const sf::Vector2f &position, const sf::Vector2f &spee
     ball.ball.setRadius(40);
 }
 
-void updateBall(const float &dt, sf::Vector2f position, Ball &ball)
+void updateBall(const float &dt, Ball &ball)
 {
     const float BALL_SIZE = 40;
-    position = ball.ball.getPosition();
-    position += ball.speed * dt;
+    ball.position += ball.speed * dt;
 
-    if ((position.x + 2 * BALL_SIZE >= WINDOW_WIDTH) && (ball.speed.x > 0))
+    if ((ball.position.x + 2 * BALL_SIZE >= WINDOW_WIDTH) && (ball.speed.x > 0))
     {
         ball.speed.x = -ball.speed.x;
     }
-    if ((position.x < 0) && (ball.speed.x < 0))
+    if ((ball.position.x < 0) && (ball.speed.x < 0))
     {
         ball.speed.x = -ball.speed.x;
     }
-    if ((position.y + 2 * BALL_SIZE >= WINDOW_HEIGHT) && (ball.speed.y > 0))
+    if ((ball.position.y + 2 * BALL_SIZE >= WINDOW_HEIGHT) && (ball.speed.y > 0))
     {
         ball.speed.y = -ball.speed.y;
     }
-    if ((position.y < 0) && (ball.speed.y < 0))
+    if ((ball.position.y < 0) && (ball.speed.y < 0))
     {
         ball.speed.y = -ball.speed.y;
     }
 
-    ball.ball.setPosition(position);
+    ball.ball.setPosition(ball.position);
 }
 
-void update(const float &dt, sf::Vector2f position, Ball &blueBall, Ball &redBall, Ball &blackBall, Ball &whiteBall, Ball &greenBall)
+void update(const float &dt, Ball &blueBall, Ball &redBall, Ball &blackBall, Ball &whiteBall, Ball &greenBall)
 {
-    updateBall(dt, position, blueBall);
-    updateBall(dt, position, redBall);
-    updateBall(dt, position, blackBall);
-    updateBall(dt, position, whiteBall);
-    updateBall(dt, position, greenBall);
+    updateBall(dt, blueBall);
+    updateBall(dt, redBall);
+    updateBall(dt, blackBall);
+    updateBall(dt, whiteBall);
+    updateBall(dt, greenBall);
+}
+
+void redrawFrame(sf::RenderWindow &window, const Ball &blueBall, const Ball &redBall, const Ball &blackBall, const Ball &whiteBall, const Ball &greenBall)
+{
+    window.draw(blueBall.ball);
+    window.draw(redBall.ball);
+    window.draw(blackBall.ball);
+    window.draw(whiteBall.ball);
+    window.draw(greenBall.ball);
 }
 
 int main()
 {
     sf::RenderWindow window(sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}), "Wawe Moving Ball");
     sf::Clock clock;
+
+    std::vector<Ball> balls;
 
     sf::Vector2f position = {10, 350};
     Ball blueBall;
@@ -86,13 +96,9 @@ int main()
             }
         }
         const float dt = clock.restart().asSeconds();
-        update(dt, position, blueBall, redBall, blackBall, whiteBall, greenBall);
+        update(dt, blueBall, redBall, blackBall, whiteBall, greenBall);
         window.clear();
-        window.draw(blueBall.ball);
-        window.draw(redBall.ball);
-        window.draw(blackBall.ball);
-        window.draw(whiteBall.ball);
-        window.draw(greenBall.ball);
+        redrawFrame(window, blueBall, redBall, blackBall, whiteBall, greenBall);
         window.display();
     }
 }
