@@ -7,6 +7,7 @@
 
 constexpr unsigned WINDOW_WIDTH = 800;
 constexpr unsigned WINDOW_HEIGHT = 600;
+constexpr float BALL_SIZE = 40;
 
 struct Ball
 {
@@ -15,75 +16,81 @@ struct Ball
     sf::Vector2f position;
 };
 
-void initBall(Ball &ball, const sf::Vector2f &position, const sf::Vector2f &speed)
+void initBalls(std::vector<Ball> &balls)
 {
-    ball.speed = speed;
-    ball.ball.setPosition(position);
-    ball.position = position;
-    ball.ball.setRadius(40);
+    balls[0].ball.setPosition({40, 250});
+    balls[1].ball.setPosition({400, 300});
+    balls[2].ball.setPosition({410, 290});
+    balls[3].ball.setPosition({20, 600});
+    balls[4].ball.setPosition({111, 222});
+
+    balls[0].ball.setFillColor(sf::Color(242, 0, 0));
+    balls[1].ball.setFillColor(sf::Color(121, 141, 1));
+    balls[2].ball.setFillColor(sf::Color(3, 77, 129));
+    balls[3].ball.setFillColor(sf::Color(239, 255, 2));
+    balls[4].ball.setFillColor(sf::Color(1, 140, 16));
+
+    balls[0].ball.setRadius(BALL_SIZE);
+    balls[1].ball.setRadius(BALL_SIZE);
+    balls[2].ball.setRadius(BALL_SIZE);
+    balls[3].ball.setRadius(BALL_SIZE);
+    balls[4].ball.setRadius(BALL_SIZE);
+
+    balls[0].speed = {500.f, -100.f};
+    balls[1].speed = {-200.f, 100.f};
+    balls[2].speed = {30.f, -300.f};
+    balls[3].speed = {-200.f, 400.f};
+    balls[4].speed = {400.f, -50.f};
 }
 
-void updateBall(const float &dt, Ball &ball)
+void update(const float &dt, std::vector<Ball> &balls, sf::Vector2f &position)
 {
-    const float BALL_SIZE = 40;
-    ball.position += ball.speed * dt;
+    for (int i = 0; i < balls.size(); ++i)
+    {
+        position = balls[i].ball.getPosition();
 
-    if ((ball.position.x + 2 * BALL_SIZE >= WINDOW_WIDTH) && (ball.speed.x > 0))
-    {
-        ball.speed.x = -ball.speed.x;
-    }
-    if ((ball.position.x < 0) && (ball.speed.x < 0))
-    {
-        ball.speed.x = -ball.speed.x;
-    }
-    if ((ball.position.y + 2 * BALL_SIZE >= WINDOW_HEIGHT) && (ball.speed.y > 0))
-    {
-        ball.speed.y = -ball.speed.y;
-    }
-    if ((ball.position.y < 0) && (ball.speed.y < 0))
-    {
-        ball.speed.y = -ball.speed.y;
-    }
+        if ((position.x + 2 * BALL_SIZE >= WINDOW_WIDTH) && (balls[i].speed.x > 0))
+        {
+            balls[i].speed.x = -balls[i].speed.x;
+        }
+        if ((position.x < 0) && (balls[i].speed.x < 0))
+        {
+            balls[i].speed.x = -balls[i].speed.x;
+        }
+        if ((position.y + 2 * BALL_SIZE >= WINDOW_HEIGHT) && (balls[i].speed.y > 0))
+        {
+            balls[i].speed.y = -balls[i].speed.y;
+        }
+        if ((position.y < 0) && (balls[i].speed.y < 0))
+        {
+            balls[i].speed.y = -balls[i].speed.y;
+        }
 
-    ball.ball.setPosition(ball.position);
+        position += balls[i].speed * dt;
+        balls[i].ball.setPosition(position);
+    }
 }
 
-void update(const float &dt, Ball &blueBall, Ball &redBall, Ball &blackBall, Ball &whiteBall, Ball &greenBall)
+void redrawFrame(sf::RenderWindow &window, std::vector<Ball> &balls)
 {
-    updateBall(dt, blueBall);
-    updateBall(dt, redBall);
-    updateBall(dt, blackBall);
-    updateBall(dt, whiteBall);
-    updateBall(dt, greenBall);
-}
-
-void redrawFrame(sf::RenderWindow &window, const Ball &blueBall, const Ball &redBall, const Ball &blackBall, const Ball &whiteBall, const Ball &greenBall)
-{
-    window.draw(blueBall.ball);
-    window.draw(redBall.ball);
-    window.draw(blackBall.ball);
-    window.draw(whiteBall.ball);
-    window.draw(greenBall.ball);
+    window.clear();
+    for (int i = 0; i < balls.size(); ++i)
+    {
+        window.draw(balls[i].ball);
+    }
+    window.display();
 }
 
 int main()
 {
+    constexpr int BALLS_COUNT = 5;
+
     sf::RenderWindow window(sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}), "Wawe Moving Ball");
     sf::Clock clock;
 
-    std::vector<Ball> balls;
-
-    sf::Vector2f position = {10, 350};
-    Ball blueBall;
-    initBall(blueBall, {400, 300}, {500, 300});
-    Ball redBall;
-    initBall(redBall, {300, 200}, {-400, 200});
-    Ball blackBall;
-    initBall(blackBall, {200, 100}, {70, -70});
-    Ball whiteBall;
-    initBall(whiteBall, {100, 50}, {90, 70});
-    Ball greenBall;
-    initBall(greenBall, {100, 50}, {300, 70});
+    std::vector<Ball> balls(BALLS_COUNT);
+    sf::Vector2f position = {0, 0};
+    initBalls(balls);
 
     while (window.isOpen())
     {
@@ -96,9 +103,7 @@ int main()
             }
         }
         const float dt = clock.restart().asSeconds();
-        update(dt, blueBall, redBall, blackBall, whiteBall, greenBall);
-        window.clear();
-        redrawFrame(window, blueBall, redBall, blackBall, whiteBall, greenBall);
-        window.display();
+        update(dt, balls, position);
+        redrawFrame(window, balls);
     }
 }
