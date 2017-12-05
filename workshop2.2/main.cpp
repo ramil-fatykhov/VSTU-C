@@ -43,7 +43,7 @@ void initBalls(std::vector<Ball> &balls)
     balls[4].speed = {400.f, -50.f};
 }
 
-float scalarProduct(sf::Vector2f speedVector, sf::Vector2f positionVector)
+float dot(sf::Vector2f speedVector, sf::Vector2f positionVector)
 {
     return ((speedVector.x * positionVector.x) + (speedVector.y * positionVector.y));
 }
@@ -55,12 +55,12 @@ void updateSpeed(std::vector<Ball> &balls, size_t fi, size_t si)
     sf::Vector2f deltaSpeed = balls[fi].speed - balls[si].speed;
     sf::Vector2f deltaSpeed2 = balls[si].speed - balls[fi].speed;
 
-    float speedXAfterImpact = balls[fi].speed.x - (scalarProduct(deltaSpeed, deltaPosition) / std::pow(std::hypot(deltaPosition.x, deltaPosition.y), 2.0)) * deltaPosition.x;
-    float speedYAfterImpact = balls[fi].speed.y - (scalarProduct(deltaSpeed, deltaPosition) / std::pow(std::hypot(deltaPosition.x, deltaPosition.y), 2.0)) * deltaPosition.y;
+    float speedXAfterImpact = balls[fi].speed.x - (dot(deltaSpeed, deltaPosition) / std::pow(std::hypot(deltaPosition.x, deltaPosition.y), 2.0)) * deltaPosition.x;
+    float speedYAfterImpact = balls[fi].speed.y - (dot(deltaSpeed, deltaPosition) / std::pow(std::hypot(deltaPosition.x, deltaPosition.y), 2.0)) * deltaPosition.y;
     balls[fi].speed = {speedXAfterImpact, speedYAfterImpact};
 
-    speedXAfterImpact = balls[si].speed.x - (scalarProduct(deltaSpeed2, deltaPosition2) / std::pow(std::hypot(deltaPosition2.x, deltaPosition2.y), 2.0)) * deltaPosition2.x;
-    speedYAfterImpact = balls[si].speed.y - (scalarProduct(deltaSpeed2, deltaPosition2) / std::pow(std::hypot(deltaPosition2.x, deltaPosition2.y), 2.0)) * deltaPosition2.y;
+    speedXAfterImpact = balls[si].speed.x - (dot(deltaSpeed2, deltaPosition2) / std::pow(std::hypot(deltaPosition2.x, deltaPosition2.y), 2.0)) * deltaPosition2.x;
+    speedYAfterImpact = balls[si].speed.y - (dot(deltaSpeed2, deltaPosition2) / std::pow(std::hypot(deltaPosition2.x, deltaPosition2.y), 2.0)) * deltaPosition2.y;
     balls[si].speed = {speedXAfterImpact, speedYAfterImpact};
 }
 
