@@ -11,10 +11,11 @@ float toDegrees(float radians)
 
 void onMouseClick(const sf::Event::MouseButtonEvent &event, sf::Vector2f &mousePosition, sf::Sprite &sprite)
 {
-    mousePosition = {float(event.x), float(event.y)};    
+    mousePosition = {float(event.x), float(event.y)};
     const sf::Vector2f distance = mousePosition - sprite.getPosition();
     const float angle = fmodf(atan2(distance.y, distance.x) + 2 * M_PI, 2 * M_PI);
-    if ((toDegrees(angle) < 270) && (toDegrees(angle) > 90))
+    std::cout << "angle=" << toDegrees(angle) << std::endl;
+    if ((toDegrees(angle) <= 270) && (toDegrees(angle) >= 90))
     {
         sprite.setScale(-1, 1);
     }
@@ -22,6 +23,7 @@ void onMouseClick(const sf::Event::MouseButtonEvent &event, sf::Vector2f &mouseP
     {
         sprite.setScale(1, 1);
     }
+    std::cout << "mouse x=" << event.x << "mouse y=" << event.y << std::endl;
 }
 
 float lenghtVector(const sf::Vector2f &vector)
@@ -32,7 +34,7 @@ float lenghtVector(const sf::Vector2f &vector)
 void update(const sf::Vector2f &mousePosition, sf::Sprite &sprite, sf::Clock &clock, sf::Vector2f &position, sf::Sprite &laser)
 {
     laser.setPosition(mousePosition);
-    const sf::Vector2f motion = mousePosition - position;
+    const sf::Vector2f motion = mousePosition - sprite.getPosition();
     const sf::Vector2f direction = motion / lenghtVector(motion);
 
     const float dt = clock.restart().asSeconds();
@@ -96,7 +98,7 @@ int main()
 
     sf::Sprite sprite;
     sprite.setTexture(cat);
-    sprite.setPosition(1, 1);
+    sprite.setPosition(400, 300);
     sprite.setOrigin(19, 17.5);
 
     sf::Sprite laser;
@@ -104,7 +106,7 @@ int main()
     laser.setOrigin(16, 16);
 
     sf::Clock clock;
-    sf::Vector2f position = sprite.getPosition();
+    sf::Vector2f position;
     sf::Vector2f mousePosition;
     while (window.isOpen())
     {
