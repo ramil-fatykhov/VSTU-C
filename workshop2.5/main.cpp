@@ -73,8 +73,8 @@ void initBall(std::vector<Ball> &balls, sf::Vector2f clickPosition, const float 
 {
     if (itsNotBallRadius(balls, clickPosition, BALL_SIZE))
     {
-        Ball bell;
-        balls.push_back(bell);
+        Ball emptyBall;
+        balls.push_back(emptyBall);
 
         PRNG generator;
         initGenerator(generator);
