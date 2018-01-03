@@ -1,30 +1,42 @@
 #include "ball.h"
 
-constexpr unsigned WINDOW_WIDTH = 800;
-constexpr unsigned WINDOW_HEIGHT = 600;
-
-void initWindow(sf::RenderWindow &window)
+albumCoverRap::albumCoverRap(sf::Font &font)
 {
-    sf::VideoMode videoMode(WINDOW_WIDTH, WINDOW_HEIGHT);
-    sf::ContextSettings settings;
-    settings.antialiasingLevel = 8;
-    window.create(videoMode, "APA/FRR ", sf::Style::Default, settings);
+    m_albumTitle.setFont(font);
+    m_albumTitle.setString("APA/FRR");
+    m_albumTitle.setCharacterSize(36);
+    m_albumTitle.setFillColor(sf::Color::Black);
+    m_albumTitle.setPosition(390, 310);
+    m_albumTitle.setOrigin({10, -10});
+
+    m_albumCoverBackground.setRadius(80);
+    m_albumCoverBackground.setOrigin({40, 40});
+    m_albumCoverBackground.setPosition({400, 300});
+    m_albumCoverBackground.setFillColor(sf::Color(0xFF, 0xC0, 0x00));
+    m_albumCoverBackground.setOutlineColor(sf::Color(0x2F, 0x55, 0x97));
+    m_albumCoverBackground.setOutlineThickness(4);
 }
 
-void initText(sf::Text &text, sf::Font &font)
+void albumCoverRap::updateBallElements()
 {
-    text.setFont(font);
-    text.setString("APA/FRR");
-    text.setCharacterSize(36);
-    text.setFillColor(sf::Color::Black);
-    text.setPosition(390, 310);
+    const float dt = clock.restart().asSeconds();
+    speed.y += dt * 9.8f;
+
+    position += dt * speed;
+    if ((position.y + 2 * 80 >= 380) && (speed.y > 0))
+    {
+        speed.y = -speed.y;
+    }
+    if ((position.y < 0) && (speed.y < 0))
+    {
+        speed.y = -speed.y;
+    }
+    m_albumCoverBackground.setPosition(center + position);
+    m_albumTitle.setPosition(center + position);
 }
 
-void initCircle(sf::CircleShape &circle)
+void albumCoverRap::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
-    circle.setOrigin({40, 40});
-    circle.setPosition({400, 300});
-    circle.setFillColor(sf::Color(0xFF, 0xC0, 0x00));
-    circle.setOutlineColor(sf::Color(0x2F, 0x55, 0x97));
-    circle.setOutlineThickness(4);
+    target.draw(m_albumCoverBackground, states);
+    target.draw(m_albumTitle, states);
 }

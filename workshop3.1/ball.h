@@ -5,8 +5,19 @@
 #include <cmath>
 #include <iostream>
 
-void initWindow(sf::RenderWindow &window);
+class albumCoverRap : public sf::Drawable
+{
+  public:
+    albumCoverRap(sf::Font &font);
+    void updateBallElements();
 
-void initText(sf::Text &text, sf::Font &font);
+  private:
+    void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
-void initCircle(sf::CircleShape &circle);
+    sf::Text m_albumTitle;
+    sf::Clock clock;
+    sf::Vector2f position;
+    sf::Vector2f speed;
+    sf::Vector2f center = {400, 100};
+    sf::CircleShape m_albumCoverBackground;
+};

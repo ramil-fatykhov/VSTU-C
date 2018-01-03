@@ -16,37 +16,26 @@ void pollEvents(sf::RenderWindow &window)
     }
 }
 
-void drawFrame(sf::RenderWindow &window, sf::CircleShape &circle, sf::Text &text)
+void createWindow(sf::RenderWindow &window)
 {
-    window.clear(sf::Color(0xFF, 0xFF, 0xFF));
-    window.draw(circle);
-    window.draw(text);
-    window.display();
+    sf::VideoMode videoMode(800, 600);
+    const std::string title = "APA/FRR Rap Album";
+    sf::ContextSettings settings;
+    settings.antialiasingLevel = 8;
+    window.create(videoMode, title, sf::Style::Default, settings);
 }
 
-void update(sf::Clock &clock, sf::Vector2f &position, sf::Vector2f &speed, sf::CircleShape &circle, sf::Text &text)
+void drawFrame(sf::RenderWindow &window, albumCoverRap &drawCover)
 {
-    const float dt = clock.restart().asSeconds();
-    speed.y += dt * 9.8f;
-
-    position += dt * speed;
-    if ((position.y + 2 * 80 >= 380) && (speed.y > 0))
-    {
-        speed.y = -speed.y;
-    }
-    if ((position.y < 0) && (speed.y < 0))
-    {
-        speed.y = -speed.y;
-    }
-    circle.setPosition(position);
-    text.setPosition(position);
+    window.clear(sf::Color(0xFF, 0xFF, 0xFF));
+    window.draw(drawCover);
+    window.display();
 }
 
 int main()
 {
-
     sf::RenderWindow window;
-    initWindow(window);
+    createWindow(window);
 
     sf::Font font;
     if (!font.loadFromFile("font/pricedown.ttf"))
@@ -54,20 +43,12 @@ int main()
         std::cout << "Font doesn't loaded" << std::endl;
     }
 
-    sf::Text text;
-    initText(text, font);
-
-    sf::CircleShape circle(80);
-    initCircle(circle);
-
-    sf::Clock clock;
-    sf::Vector2f position = {480, 380};
-    sf::Vector2f speed = {0, -80};
+    albumCoverRap drawCover(font);
 
     while (window.isOpen())
     {
         pollEvents(window);
-        update(clock, position, speed, circle, text);
-        drawFrame(window, circle, text);
+        drawCover.updateBallElements();
+        drawFrame(window, drawCover);
     }
 }
