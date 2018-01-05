@@ -14,7 +14,6 @@ void onMouseClick(const sf::Event::MouseButtonEvent &event, sf::Vector2f &mouseP
     mousePosition = {float(event.x), float(event.y)};
     const sf::Vector2f distance = mousePosition - sprite.getPosition();
     const float angle = fmodf(atan2(distance.y, distance.x) + 2 * M_PI, 2 * M_PI);
-    std::cout << "angle=" << toDegrees(angle) << std::endl;
     if ((toDegrees(angle) <= 270) && (toDegrees(angle) >= 90))
     {
         sprite.setScale(-1, 1);
@@ -23,25 +22,29 @@ void onMouseClick(const sf::Event::MouseButtonEvent &event, sf::Vector2f &mouseP
     {
         sprite.setScale(1, 1);
     }
-    std::cout << "mouse x=" << event.x << "mouse y=" << event.y << std::endl;
 }
 
-float lenghtVector(const sf::Vector2f &vector)
+float lengthOfTheVector(const sf::Vector2f &vector)
 {
     return std::hypotf(vector.x, vector.y);
 }
 
 void update(const sf::Vector2f &mousePosition, sf::Sprite &sprite, sf::Clock &clock, sf::Vector2f &position, sf::Sprite &laser)
 {
+    const float epsilon = 0.1f;
     laser.setPosition(mousePosition);
     const sf::Vector2f motion = mousePosition - sprite.getPosition();
-    const sf::Vector2f direction = motion / lenghtVector(motion);
+    sf::Vector2f direction = {0, 0};
+
+    if (lengthOfTheVector(motion) > epsilon)
+    {
+        direction = motion / lengthOfTheVector(motion);
+    }
 
     const float dt = clock.restart().asSeconds();
-    const float speed = 200.f;
+    float speed = 200.f;
 
     position += direction * speed * dt;
-
     sprite.setPosition(position);
 }
 
@@ -107,7 +110,7 @@ int main()
 
     sf::Clock clock;
     sf::Vector2f position;
-    sf::Vector2f mousePosition;
+    sf::Vector2f mousePosition = {-40, -40};
     while (window.isOpen())
     {
         pollEvents(window, mousePosition, sprite);
