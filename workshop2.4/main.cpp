@@ -44,7 +44,7 @@ sf::Color randomColor(PRNG &generator)
         sf::Uint8(random(generator, 0, 255))};
 }
 
-unsigned random_sign(PRNG &generator)
+unsigned randomSign(PRNG &generator)
 {
     std::uniform_int_distribution<unsigned> distribution(0, 1);
     return distribution(generator.engine);

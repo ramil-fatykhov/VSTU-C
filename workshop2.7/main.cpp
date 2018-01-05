@@ -31,7 +31,7 @@ unsigned random(PRNG &generator, unsigned minValue, unsigned maxValue)
     return distribution(generator.engine);
 }
 
-unsigned random_color(PRNG &generator)
+unsigned randomColor(PRNG &generator)
 {
     std::uniform_int_distribution<unsigned> distribution(0, 255);
     return distribution(generator.engine);
@@ -47,7 +47,7 @@ float updateBallLifetimes(float timer, const float &dt)
     timer = timer - dt;
 }
 
-sf::Color randomColor(PRNG &generator)
+sf::Color chanseColor(PRNG &generator)
 {
     return {
         sf::Uint8(random(generator, 0, 255)),
@@ -55,7 +55,7 @@ sf::Color randomColor(PRNG &generator)
         sf::Uint8(random(generator, 0, 255))};
 }
 
-unsigned random_sign(PRNG &generator)
+unsigned randomSign(PRNG &generator)
 {
     std::uniform_int_distribution<unsigned> distribution(0, 1);
     return distribution(generator.engine);
@@ -95,7 +95,7 @@ void initBall(std::vector<Ball> &balls, sf::Vector2f clickPosition, const float 
         float speedX = random(generator, 100, 300);
         float speedY = random(generator, 100, 300);
         balls[i].speed = {speedX, speedY};
-        balls[i].ball.setFillColor(randomColor(generator));
+        balls[i].ball.setFillColor(chanseColor(generator));
         balls[i].ball.setRadius(BALL_SIZE);
         balls[i].ball.setPosition({clickPosition});
     }

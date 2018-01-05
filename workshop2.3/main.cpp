@@ -36,7 +36,7 @@ unsigned random(PRNG &generator, unsigned minValue, unsigned maxValue)
     return distribution(generator.engine);
 }
 
-unsigned random_sign(PRNG &generator)
+unsigned randomSign(PRNG &generator)
 {
     std::uniform_int_distribution<unsigned> distribution(0, 1);
     return distribution(generator.engine);
